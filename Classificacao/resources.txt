@@ -1,0 +1,10 @@
+
+
+
+http://kenzotakahashi.github.io/naive-bayes-from-scratch-in-python.html
+
+Book: Introduction to Information Retrievel
+https://nlp.stanford.edu/IR-book/
+
+
+
