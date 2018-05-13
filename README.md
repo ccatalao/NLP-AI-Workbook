@@ -1,5 +1,5 @@
 # NLP-AI-PT-Workbook
-LINGUAGEM NATURAL E INTELIGÊNCIA ARTIFICIAL
+LINGUAGEM NATURAL E INTELIGÊNCIA ARTIFICIAL  
 para a língua portuguesa
 
 Aplicações e tutoriais
