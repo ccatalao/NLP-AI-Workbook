@@ -1,13 +1,14 @@
 
-# Capítulo 2
-##O pré-processamento  
-  
+# Capítulo 2  
 
+
+##O pré-processamento  
   
 ####Introdução  
 
 
-Quando processamos um texto escrito em linguagem natural fazemo-lo para revelar padrões capazes de permitir aos computadores aprender a realizar de forma eficaz funções com impacto no dia-a-dia, como tradução automática, reconhecimento de voz, ou outras. Contudo, como veremos neste capítulo, a capacidade dos computadores para aprender com dados linguísticos é extremamente limitada. Para que estes aprendam a partir de um texto, é imprescindível transformá-lo em material digerível por motores matemáticos que só aceitam números como combustível. O texto, no seu estado primário (o chamado raw texto), embora eloquente para um humano, é de pouca utilidade para uma máquina.   
+Quando processamos um texto escrito em linguagem natural fazemo-lo para revelar padrões capazes de permitir aos computadores aprender a realizar de forma eficaz funções com impacto no dia-a-dia, como tradução automática, reconhecimento de voz, ou outras. Contudo, como veremos neste capítulo, a capacidade dos computadores para aprender com dados linguísticos é extremamente limitada. Para que estes aprendam a partir de um texto, é imprescindível transformá-lo em material digerível por motores matemáticos que só aceitam números como combustível. O texto, no seu estado primário (o chamado raw texto), embora eloquente para um humano, é de pouca utilidade para uma máquina.    
+
 
 Para tal o texto tem de ser previamente processado. Na maior parte dos casos será necessário dividi-lo em frases, repartir as frases em palavras, anotar cada uma delas, testar combinações de palavras, remover as pouco significativas e, finalmente, reduzir cada uma das restantes a matrizes de dígitos, zero ou um. 
 
