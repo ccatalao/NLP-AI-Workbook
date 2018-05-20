@@ -1,26 +1,29 @@
-
-# coding: utf-8
-
-# # LINGUAGEM NATURAL E INTELIGÊNCIA ARTIFICIAL
-# 
-
-# ## CLASSIFICAÇÃO AUTOMÁTICA DE TEXTO
-'''
-# #### Aplicação:
-Classificar textos de acções de divulgação científica, com aplicação de aprendizagem automática supervisionada.
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Programa que testa e compara o desempenho de modelos de classificação automática de texto
+#
+# Criado em Maio 13 22:27:08 2018
+#
+# @author: ccatalao
+#
+#
+# Aplicação:
+# Classificar textos de acções de divulgação científica, com aplicação de aprendizagem automática supervisionada.
 # Os dados utilizados neste exemplo são dois ficheiros em formato CSV:
-dados_treino.csv, com textos classificados por categorias temáticas (eg., astronomia, biologia, etc)
-dados_classificar.csv, com textos não classificados.
-O resultado final será a criação de um ficheiro excel (dados_classificados.xls).
-# #### Livrarias python
-'''
+# dados_treino.csv, com textos classificados por categorias temáticas (eg., astronomia, biologia, etc)
+# dados_classificar.csv, com textos não classificados.
+# O resultado final é a criação de um ficheiro excel (dados_classificados.xls).
 
+
+
+# Bibliotecas python
 
 import re
 import pandas as pd
 from collections import OrderedDict
 
-# #### Livrarias NLTK - Natural Langage Processing Toolkit
+# Bibliotecas NLTK - Natural Langage Processing Toolkit
 import nltk
 from nltk.stem.snowball import SnowballStemmer
 from nltk.corpus import stopwords
@@ -42,8 +45,7 @@ CLASSIFICAR = "textos_classificar.csv"
 RESULTADOS = "textos_classificados"
 
 
-# #### Funções
-
+# Funções
 
 def tokenizar(texto, stemizar=True, lingua="portuguese"):
 
@@ -73,7 +75,7 @@ def tokenizar(texto, stemizar=True, lingua="portuguese"):
 dados_treino = pd.read_csv(TREINO, delimiter = "\t", quoting = 3)
 
 
-# #### Pré-processamento dos textos de treino
+# Pré-processamento dos textos de treino
 print("\nA treinar com textos classificados ...\n")
 for i in range(len(dados_treino)):    
     termos = tokenizar(dados_treino["texto"][i], stemizar=True, lingua="portuguese")    
@@ -82,7 +84,7 @@ for i in range(len(dados_treino)):
     corpus.append(termos)
 
 
-# #### Calcular a matriz TF-IDF
+# Calcular a matriz TF-IDF
 
 # Vectorizar só as 100 palavras mais frequentes
 cv = CountVectorizer(max_features = 100)
@@ -111,12 +113,12 @@ for i in range(len(dados_classificar)):
     novo_corpus.append(termos)
 
 
-# #### Calcular a matiz TF-IDF dos novos textos
+# Calcular a matiz TF-IDF dos novos textos
 X_novo = cv.transform(novo_corpus)
 X_novo_tfidf = tfidf_transformer.transform(X_novo)
 
 
-# #### Previsão de classificações e respectivas probabilidades
+# Previsão de classificações e respectivas probabilidades
 previsoes = clf.predict(X_novo_tfidf)
 probabilidades = clf.predict_proba(X_novo_tfidf)
 
@@ -138,7 +140,7 @@ for i in range(len(dados_classificar)):
 
 
 
-# #### Guardar os novos textos, já classificados
+# Guardar os novos textos, já classificados
 
 # Criar o dataframe com os textos classificados
 df = pd.DataFrame(nova_classificacao)
