@@ -1,4 +1,11 @@
-
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Programa que testa e compara o desempenho de modelos de classificação automática de texto
+#
+# Criado em Maio 13 22:27:08 2018
+#
+# @author: ccatalao
 
 
 import re
