@@ -12,7 +12,8 @@
 
 # #### Aplicação:
 
-# Programa que classifica automaticamente acções de divulgação científica, com aplicação de aprendizagem automática supervisionada.  
+# Programa que classifica automaticamente acções de divulgação científica, 
+# com aplicação de aprendizagem automática supervisionada.  
 #   
 #   
 
