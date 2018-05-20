@@ -1,91 +1,91 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Programa que testa e compara o desempenho de modelos de classificação automática de texto
-#
-# Criado em Maio 13 22:27:08 2018
-#
+# Programa de classificação automática de texto.
 # @author: ccatalao
-#
-#
-# Aplicação:
-# Classificar textos de acções de divulgação científica, com aplicação de aprendizagem automática supervisionada.
-# Os dados utilizados neste exemplo são dois ficheiros em formato CSV:
-# dados_treino.csv, com textos classificados por categorias temáticas (eg., astronomia, biologia, etc)
-# dados_classificar.csv, com textos não classificados.
-# O resultado final é a criação de um ficheiro excel (dados_classificados.xls).
+# Carlos Catalão Alves 
+
+# Criado em 13 Maio 2018
+# Última actualização: 2018-05-20 18:36 (Dom, 20 Maio 2018)
+ 
 
 
+# #### Aplicação:
 
-# Bibliotecas python
+# Programa que classifica automaticamente acções de divulgação científica, com aplicação de aprendizagem automática supervisionada.  
+#   
+#   
+
+# Os textos são lidos em dois ficheiros em formato csv, delimitados por tabs:  
+# 
+# 1. treinar.csv (com textos classificados, para treino do modelo)   
+# 2. classificar.csv (com os novos textos para classificação automática) 
+# 
+# O resultado final é a criação de dois ficheiros com os novos textos já classificados,   
+# com indicação da respectiva probabilidade:
+# 
+# 1. classificados.csv (ficheiro csv, delimitado com tabs)  
+# 2. classifcados.xlsx (ficheiro excel)
+# 
+# 
+
 
 import re
 import pandas as pd
 from collections import OrderedDict
-
-# Bibliotecas NLTK - Natural Langage Processing Toolkit
 import nltk
 from nltk.stem.snowball import SnowballStemmer
 from nltk.corpus import stopwords
-
-
-# #### Livrarias SciKit Learn - Machine Learning
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.naive_bayes import MultinomialNB
 
 
-# #### Variáveis
-
+# Variáveis
 corpus = []
 novo_corpus = []
 categorias = [ "outra","Astronomia","Biologia","Geologia","Engenharia","Patrimonio"]
-
-TREINO = "textos_treino.csv"
-CLASSIFICAR = "textos_classificar.csv"
-RESULTADOS = "textos_classificados"
+TREINO = "treinar.csv"
+CLASSIFICAR = "classificar.csv"
+RESULTADOS = "classificados"
 
 
 # Funções
 
-def tokenizar(texto, stemizar=True, lingua="portuguese"):
+def atomizar(texto, radical=True, lingua="portuguese"):
 
-    # Usa o SnowballStemmer do NLTK para português
-    stemizador = SnowballStemmer(lingua)
+    # usa o SnowballStemmer do NLTK para português para obter o radical
+    radicalizador = SnowballStemmer(lingua)
 
-    # Tokeniza por frase e por palavra
-    tokens = [word.lower() for frase in nltk.sent_tokenize(texto) for word in nltk.word_tokenize(frase)]
+    # atomiza por frase e palavra
+    atomos = [word.lower() for frase in nltk.sent_tokenize(texto) for word in nltk.word_tokenize(frase)]
     
     # Aplica NLTK stopwords 
     stop_words_pt = set(stopwords.words(lingua)) 
     
     # Filtra as palavras que não têm letras, e as que estão na lista de stopwords
-    tokens_filtrados = []
-    for token in tokens:
-        if re.search("[a-zA-Z]", token):
-            if token not in stopwords.words(lingua):
-                if token not in stop_words_pt:
-                    tokens_filtrados.append(token)
-                if stemizar:
-                    stems = [stemizador.stem(token) for token in tokens_filtrados]
-    return stems
+    atomos_filtrados = []
+    for atomo in atomos:
+        if re.search("[a-zA-Z]", atomo):
+            if atomo not in stopwords.words(lingua):
+                if atomo not in stop_words_pt:
+                    atomos_filtrados.append(atomo)
+                if radical:
+                    radicais = [radicalizador.stem(atomo) for atomo in atomos_filtrados]
+    return radicais
 
 
-
-# Importando os dados de treino
+# Ler os dados de treino
 dados_treino = pd.read_csv(TREINO, delimiter = "\t", quoting = 3)
-
 
 # Pré-processamento dos textos de treino
 print("\nA treinar com textos classificados ...\n")
 for i in range(len(dados_treino)):    
-    termos = tokenizar(dados_treino["texto"][i], stemizar=True, lingua="portuguese")    
+    atomos = atomizar(dados_treino["texto"][i], radical=True, lingua="portuguese")    
     # refaz cada linha com os tokens processados
-    termos = ' '.join(termos)
-    corpus.append(termos)
-
+    atomos = ' '.join(atomos)
+    corpus.append(atomos)
 
 # Calcular a matriz TF-IDF
-
 # Vectorizar só as 100 palavras mais frequentes
 cv = CountVectorizer(max_features = 100)
 
@@ -101,24 +101,24 @@ y = dados_treino.iloc[:, 2].values
 # Aplicar o modelo Multinominal Naive Bayes
 clf = MultinomialNB().fit(X_tfidf, y)
 
-# #### Importar novos textos para classificação
+# Ler novos textos para classificação
 dados_classificar = pd.read_csv(CLASSIFICAR, delimiter = "\t", quoting = 3)
 
-# #### Pré-processamento dos novos textos
+# Pré-processamento dos novos textos
+
 print("A classificar novos textos ...\n")
 for i in range(len(dados_classificar)):    
-    termos = tokenizar(dados_classificar["texto"][i], stemizar=True, lingua="portuguese")    
+    atomos = atomizar(dados_classificar["texto"][i], radical=True, lingua="portuguese")    
     # refaz cada linha com os termos processados
-    termos = ' '.join(termos)
-    novo_corpus.append(termos)
-
+    atomos = ' '.join(atomos)
+    novo_corpus.append(atomos)
 
 # Calcular a matiz TF-IDF dos novos textos
 X_novo = cv.transform(novo_corpus)
 X_novo_tfidf = tfidf_transformer.transform(X_novo)
 
-
 # Previsão de classificações e respectivas probabilidades
+
 previsoes = clf.predict(X_novo_tfidf)
 probabilidades = clf.predict_proba(X_novo_tfidf)
 
@@ -138,10 +138,6 @@ for i in range(len(dados_classificar)):
     OrderedDict(line) # para preservar a ordem das colunas
     nova_classificacao.append(line)
 
-
-
-# Guardar os novos textos, já classificados
-
 # Criar o dataframe com os textos classificados
 df = pd.DataFrame(nova_classificacao)
 # Manter a ordem das colunas no dataframe 
@@ -154,5 +150,4 @@ df.to_csv(RESULTADOS + ".csv", index=False, sep='\t')
 df.to_excel(RESULTADOS + ".xlsx", index=False)
 
 print("Resultados gravados em excel e csv.\n")
-
 
