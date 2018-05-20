@@ -1,11 +1,30 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Programa que testa e compara o desempenho de modelos de classificação automática de texto
-#
-# Criado em Maio 13 22:27:08 2018
-#
+# Programa de classificação automática de texto.
 # @author: ccatalao
+# Carlos Catalão Alves 
+
+# Criado em 13 Maio 2018
+# Última actualização: 2018-05-20 18:36 (Dom, 20 Maio 2018)
+ 
+
+# #### Aplicação:
+
+# Obter e comparar os resultados de diferentes modelos de classificação.  
+#   
+# Os modelos comparados são:
+#
+#   k-Nearest Neighbor (kNN)
+#   SGDClassifier
+#   Perceptron
+#   Naive Bayes (modelos Multinominal e Bernoulli)
+
+# Os dados são lidos num ficheiro csv, delimitado por tabs (textos_treino.csv), 
+# e são divididos em séries para treino e para teste. Os resultados são obtidos 
+# a partir de uma comparação entre as classificações previstas pelos modelos 
+# treinados e as classificações reais à partida.
+# 
 
 
 import re
@@ -53,39 +72,38 @@ def reporta(clf, modelo):
     clf_descr = str(clf).split('(')[0]
     return clf_descr, score
 
-def trim(s):
-    """Trim string to fit on terminal (assuming 80-column display)"""
-    return s if len(s) <= 80 else s[:77] + "..."
+def atomizar(texto, radical=True, lingua="portuguese"):
 
-def tokenizar(texto, stemizar=True, lingua="portuguese"):
+    # usa o SnowballStemmer do NLTK para português para obter o radical
+    radicalizador = SnowballStemmer(lingua)
 
-    # Usa o SnowballStemmer do NLTK para português
-    stemizador = SnowballStemmer(lingua)
-
-    # Tokeniza por frase e por palavra
-    tokens = [word.lower() for frase in nltk.sent_tokenize(texto) for word in nltk.word_tokenize(frase)]
+    # atomiza por frase e palavra
+    atomos = [word.lower() for frase in nltk.sent_tokenize(texto) for word in nltk.word_tokenize(frase)]
     
     # Aplica NLTK stopwords 
     stop_words_pt = set(stopwords.words(lingua)) 
     
     # Filtra as palavras que não têm letras, e as que estão na lista de stopwords
-    tokens_filtrados = []
-    for token in tokens:
-        if re.search("[a-zA-Z]", token):
-            if token not in stopwords.words(lingua):
-                if token not in stop_words_pt:
-                    tokens_filtrados.append(token)
-                if stemizar:
-                    stems = [stemizador.stem(token) for token in tokens_filtrados]
-    return stems
+    atomos_filtrados = []
+    for atomo in atomos:
+        if re.search("[a-zA-Z]", atomo):
+            if atomo not in stopwords.words(lingua):
+                if atomo not in stop_words_pt:
+                    atomos_filtrados.append(atomo)
+                if radical:
+                    radicais = [radicalizador.stem(atomo) for atomo in atomos_filtrados]
+    return radicais
 
+def trim(s):
+    """Trim string to fit on terminal (assuming 80-column display)"""
+    return s if len(s) <= 80 else s[:77] + "..."
 
 # #############################################################################
 
 report = []
 categorias = [ "Astronomia","Biologia","Geologia","Engenharia","Patrimonio"]
 
-dados = pd.read_csv('textos_treino.csv', delimiter = '\t', quoting = 3)
+dados = pd.read_csv('treinar.csv', delimiter = '\t', quoting = 3)
 
 X = dados["texto"]
 y = dados["target"]
@@ -100,7 +118,7 @@ print()
 
 print("A extrair termos de %d documentos de treino ..."  % (len(X_treino)))
 t0 = time()
-vectorizer = TfidfVectorizer(sublinear_tf=True, max_df=0.5, stop_words='english', tokenizer=tokenizar)
+vectorizer = TfidfVectorizer(sublinear_tf=True, max_df=0.5, stop_words='english', tokenizer=atomizar)
 X_treino = vectorizer.fit_transform(X_treino)
 duracao = time() - t0
 print("Termos extraídos em: {0:.1f}s".format(duracao))
