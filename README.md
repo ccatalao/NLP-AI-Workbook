@@ -1,10 +1,9 @@
 # NLP-AI-PT-Workbook
-LINGUAGEM NATURAL E INTELIGÊNCIA ARTIFICIAL  
+
+LINGUAGEM NATURAL E INTELIGÊNCIA ARTIFICIAL
 
 Aplicações e tutoriais para a língua portuguesa
 
-Autor:
-Carlos Catalão Alves  
+Autor: Carlos Catalão Alves  
 www.carloscatalao.com
-
 
