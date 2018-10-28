@@ -99,13 +99,13 @@ while True:
 
     try: 
         # Calcular a matiz TF-IDF do novo texto
-        my_input = input("Escreva uma frase para classificar -> ")
+        my_input = input("\nEscreva uma frase para classificar -> ")
         input_corpus = []
         novo_corpus = []
         
         input_corpus.append(my_input)
         
-        print("A classificar novo texto ...\n")
+        print("\nA processar a frase ...\n")
         atomos = atomizar(input_corpus[0], radical=True, lingua="portuguese")    
         # refaz linha com os termos processados
         atomos = ' '.join(atomos)
@@ -124,8 +124,12 @@ while True:
         categoria = categorias[previsao]
         probabilidade = (probabilidades[0][previsao-1]) * 100
         
-        print(novo_corpus[0] + '\n')
-        print("Categoria: %s. Probabilidade = %f" % (categoria, probabilidade))
-
+        if probabilidade > 50: 
+        
+            print(novo_corpus[0] + '\n')
+            print("\nCategoria: %s. Probabilidade = %f" % (categoria, probabilidade))
+        else:
+            print("\nNão consigo classificar essa frase com um grau de confiança superior a 50%. Tente de novo ...\n")
+            
     except(KeyboardInterrupt, EOFError, SystemExit):
         break
